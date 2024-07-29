@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        font-family: sans-serif;
+      }
+
+      #username {
+        border: none;
+        outline: none;
+        width: 90%;
+        height: 35px;
+        font-size: 15px;
+        border-radius: 5px;
+        padding-left: 5px;
+        margin-bottom: 5px;
+        transition-property: background;
+        transition-duration: 0.3s;
+      }
+
+      :root {
+        background-color: #141414;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      #form {
+        background-color: rgb(44, 43, 43);
+        width: 280px;
+        padding: 60px 25px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: 10px;
+      }
+
+      label {
+        width: 91%;
+        margin-top: 30px;
+        margin-bottom: 5px;
+        color: #fff;
+      }
+
+      h1 {
+        color: #fff;
+        font-size: 35px;
+      }
+
+      span {
+        width: 91%;
+        color: rgb(207, 58, 58);
+        margin-bottom: 15px;
+        font-size: 13px;
+      }
+
+      #button {
+        width: 91%;
+        height: 35px;
+        border-radius: 5px;
+        border: none;
+        background-color: rgb(37, 165, 37);
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition-property: background;
+        transition-duration: 0.3s;
+      }
+
+      #button:hover {
+        background-color: rgb(35, 182, 35);
+      }
+
+      #username:hover {
+        background-color: rgb(241, 239, 239);
+      }
+    </style>
+  </head>
+  <body>
+    <form action="" id="form">
+      <header>
+        <h1>Registrarse</h1>
+      </header>
+      <label for="username">Ingrese su nombre:</label>
+      <input type="text" id="username" placeholder="Nombre de usuario" />
+      <span id="error"
+        >El nombre debe ser de entre 3 y 10 caracteres y no debe contener
+        espacios</span
+      >
+      <button type="submit" id="button">Registrarse</button>
+    </form>
+    <script>
+      const button = document.getElementById("button");
+      const input = document.getElementById("username");
+      const error = document.getElementById("error");
+
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        if (!/^[^\s]{3,10}$/.test(input.value)) {
+          error.style.fontSize = "14px";
+          error.textContent = "Nombre invalido";
+        } else {
+          try {
+            error.textContent =
+              "El nombre debe ser de entre 3 y 10 caracteres y no debe contener espacios";
+            error.style.fontSize = "13px";
+            const respuesta = await fetch("http://localhost:8000/registro", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ username: input.value }),
+            });
+
+            const res = await respuesta.json();
+            console.log(res);
+
+            if (res.validation) {
+              console.log();
+              sessionStorage.setItem("usuario", JSON.stringify(res.data[0]));
+              window.open(res.url);
+            } else {
+                error.style.fontSize = "14px";
+                error.textContent = res.message;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

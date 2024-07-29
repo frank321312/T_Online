@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container-chat">
+      <header>
+        <h1 class="titulo">WordChat_V0.1</h1>
+      </header>
+      <div class="container__message"></div>
+      <form class="form">
+        <input type="text" class="chat" value="" />
+        <button type="submit" class="enviar">Enviar mensaje</button>
+        <!-- <button class="toggle-btn">Desconectar</button> -->
+      </form>
+    </div>
+
+    <div class="container-sala">
+      <div class="salas">
+
+      </div>
+      <div class="container-addSala">
+        <div class="addSala"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="./client.js"></script>
+    <script>
+      const dataDefect = {
+        nombre: "",
+        idUsuario: 0,
+        serverOffset: 0,
+      };
+      sessionStorage.getItem("usuario") ??
+        sessionStorage.setItem("usuario", JSON.stringify(dataDefect));
+
+      const socket = io({
+        auth: {
+          nombre: JSON.parse(sessionStorage.getItem("usuario")).nombre ?? "",
+          id: JSON.parse(sessionStorage.getItem("usuario")).idUsuario ?? 0,
+        },
+      });
+
+      const inputText = document.querySelector(".chat");
+      const form = document.querySelector(".form");
+      const buttonToggle = document.querySelector(".toggle-btn");
+      const container = document.querySelector(".container__message");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (inputText.value) {
+          socket.emit("chat message", inputText.value);
+          inputText.value = "";
+        }
+      });
+
+      // buttonToggle.addEventListener("click", (e) => {
+      //   e.preventDefault();
+      //   if (socket.connected) {
+      //     buttonToggle.textContent = "Conectar";
+      //     socket.disconnect();
+      //   } else {
+      //     buttonToggle.textContent = "Desconectar";
+      //     socket.connect();
+      //   }
+      // });
+
+      socket.on("mensaje", (msg, user) => {
+        container.innerHTML +=
+          socket.auth.id === user.idUsuario
+            ? `<span style="background-color: #3d3a3a;">Yo: ${msg}</span>`
+            : `<span>${user.nombre}: ${msg}</span>`;
+        container.scrollTop = container.scrollHeight;
+      });
+
+      socket.on("mensaje recovered", (msgList, obj) => {
+        if (socket.auth.id === obj.idUsuario) {
+          container.innerHTML = "";
+          msgList.forEach((msg) => {
+            container.innerHTML +=
+              socket.auth.id === msg.idUsuario
+                ? `<span style="background-color: #3d3a3a;">Yo: ${msg.contenido}</span>`
+                : `<span>${msg.nombre}: ${msg.contenido}</span>`;
+          });
+        }
+      });
+
+      socket.on("error user", (error) => {
+        console.log(error);
+      });
+
+    </script>
+  </body>
+</html>

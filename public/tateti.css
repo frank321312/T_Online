@@ -1,0 +1,137 @@
+.container {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.cuadro__base {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 500px;
+    height: 500px;
+}
+
+.cuadro {
+    width: 30%;
+    height: 30%;
+    border: solid 5px #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* animation-name: desvanecerCuadro; */
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+.puntaje {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+    height: 50px;
+}
+
+.player {
+    width: max-content;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    font-weight: bold;
+}
+
+.equis {
+    background-color: #fff;
+    height: 150px;
+    width: 10px;
+    transform: rotate(45deg);
+}
+
+.equis::after {
+    content: "";
+    position: absolute;
+    height: 150px;
+    width: 10px;
+    background-color: #fff;
+    transform: rotate(-90deg);
+}
+
+.circulo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: solid 5px #fff;
+    background-color: transparent;
+}
+
+.cuadro__win {
+    width: max-content;
+    height: 50%;
+    border-radius: 10px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 60px;
+    font-weight: bold;
+    position: absolute;
+    visibility: hidden;
+    /* animation-name: bajarCuadroWin; */
+    animation-duration: 2s;
+}
+
+.cotenedor__hijos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;    
+    text-align: center;
+    padding: 10px;
+}
+
+.reload {
+    width: max-content;
+    height: 30px;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(20, 204, 228);
+    cursor: pointer;
+    margin-top: 30px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reload:hover {
+    background-color: rgb(26, 197, 219);
+}
+
+@keyframes bajarCuadroWin {
+    0% {
+        transform: translateY(-100vh);
+    }
+
+    100% {
+        transform: translateY(0);
+        visibility: hidden;
+    }
+}
+
+@keyframes desvanecerCuadro {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: .2;
+    }
+}

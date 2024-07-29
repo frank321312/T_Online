@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="tateti.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="cuadro__base">
+        <div class="cuadro one"></div>
+        <div class="cuadro two"></div>
+        <div class="cuadro three"></div>
+        <div class="cuadro four"></div>
+        <div class="cuadro five"></div>
+        <div class="cuadro six"></div>
+        <div class="cuadro seven"></div>
+        <div class="cuadro height"></div>
+        <div class="cuadro nine"></div>
+      </div>
+      <div class="cuadro__win">
+        <div class="cotenedor__hijos"></div>
+      </div>
+    </div>
+    <script>
+      const cuadroAll = document.querySelectorAll(".cuadro");
+
+      function tieneHijos(agregarHijo, elemento) {
+        if (elemento.children.length == 0) {
+          elemento.appendChild(agregarHijo);
+        }
+      }
+
+      for (let i = 0; i < cuadroAll.length; i++) {
+        const x = document.createElement("div");
+        x.classList.add("equis");
+
+        const o = document.createElement("div");
+        o.classList.add("circulo");
+
+        cuadroAll[i].addEventListener("click", () => {
+          socket.emit("jugada", `Hice una jugada ${i}`);
+
+          socket.on("espera", (id, permitir) => {
+            if (permitir) {
+            }
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

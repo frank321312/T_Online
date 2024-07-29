@@ -1,0 +1,235 @@
+* {
+    margin: 0;
+}
+
+:root {
+    background-color: #141414;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.container__message {
+    width: 400px;
+    height: 95%;
+    background-color: rgb(110, 111, 112);
+    border-radius: 5px;
+    overflow-y: auto;
+}
+
+span {
+    display: block;
+    font-size: 16px;
+    color: #fff;
+    padding: 5px;
+    background-color: #524e4e;
+}
+
+.titulo {
+    color: #fff;
+}
+
+.container-chat {
+    display: flex;
+    flex-wrap: wrap;
+    width: 400px;
+    height: 70vh;
+    margin-right: 20px;
+    /* margin-left: 20px; */
+}
+
+.chat {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    transition-property: background;
+    transition-duration: .2s;
+}
+
+.form {
+    width: 100%;
+    height: 28px;
+    display: flex;
+}
+
+.form > button {
+    border: none;
+    height: 100%;
+    transition-property: background;
+    transition-duration: .2s;
+}
+
+.container-addSala {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: end;
+    padding: 10px 0;
+}
+
+.addSala{ 
+    width: 100px;
+    height: 100%;
+    background-color: #3d3a3a;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.addSala::before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    background-color: #cfcdcd;
+    border-radius: 5px;
+}
+
+.addSala::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 7px;
+    border-radius: 5px;
+    background-color: #cfcdcd;
+    transform: rotate(180deg);
+}
+
+.enviar {
+    background-color: rgb(20, 204, 228);
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Cuadro crear sala */
+
+.cuadro-add {
+    width: 30vw;
+    height: 20vh;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: center;
+    /* visibility: hidden; */
+}
+
+.form-sala {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.ico-X {
+    background-color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+}
+
+.sala-text {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 2px 0;
+    background-color: rgb(204, 218, 213);
+    height: 20px;
+    transition-property: background;
+    transition-duration: 0.3s;
+    font-size: 14px;
+}
+
+.sala-text:hover {
+    background-color: rgb(211, 205, 205);
+}
+
+.sala-text:focus {
+    background-color: rgb(211, 205, 205);
+}
+
+.label-text {
+    align-self: self-start;
+    margin-bottom: 3px;
+}
+
+.btn-add {
+    width: 100%;
+    height: 25px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(37, 165, 37);
+    color: #fff;
+    cursor: pointer;
+    transition-property: background;
+    transition-duration: 0.3s;
+    font-size: 14px;
+}
+
+.container-sala {
+    height: 100vh;
+    display: flex;
+    width: 40vw;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.salas {
+    width: 100%;
+    min-height: 20%;
+    max-height: 100%;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    /* flex-grow: 1; */
+    flex-wrap: wrap;
+    overflow-y: auto;
+}
+
+.sala {
+    width: 40%;
+    background-color: #3d3a3a;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    padding: 10px 0;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+.btn-add:hover {
+    background-color: rgb(35, 182, 35);
+}
+
+.check-box {
+    align-self: flex-start;
+}
+
+.enviar:hover {
+    background-color: rgb(35, 181, 201);
+}
+
+.chat:hover {
+    background-color: #ece7e7;
+}
+
+.chat:focus {
+    background-color: #ece7e7;
+}

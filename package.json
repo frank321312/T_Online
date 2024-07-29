@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@libsql/client": "^0.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "name": "tateti_online",
+  "version": "1.0.0",
+  "description": "Tateti online con chat",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Anonimo",
+  "license": "ISC"
+}
