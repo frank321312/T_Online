@@ -188,6 +188,10 @@ app.post("/sala-post", async (req, res) => {
     }
 });
 
+app.get("/test", (req, res) => {
+    res.send("Esto es una prueba")
+});
+
 io.on("connection", async (socket) => {
     console.log("Usuario conectado");
 
