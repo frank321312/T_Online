@@ -11,9 +11,7 @@ const app = express();
 const server = createServer(app);
 
 app.use(express.json());
-app.use(cors({
-    origin: 'https://tateti-online-91uk7faw6-franks-projects-d13e9ffe.vercel.app',
-}));
+app.use(cors());
 
 const io = new Server(server, {
     connectionStateRecovery: {
@@ -184,7 +182,7 @@ app.post("/api/sala-post", async (req, res) => {
     } catch (error) {
         if (error.error) {
             res.status(400).json(error);
-        } 
+        }
         console.log(req.body);
         // console.log(error);
     }
