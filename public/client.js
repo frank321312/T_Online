@@ -51,7 +51,7 @@ addSala.addEventListener("click", () => {
                 errorMessage.style.padding = "5px 0 0 0";
             } else {
                 try {
-                    const respuesta = await fetch("https://t-online.vercel.app/sala-post", {
+                    const respuesta = await fetch("https://t-online.vercel.app/api/sala-post", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

@@ -11,7 +11,9 @@ const app = express();
 const server = createServer(app);
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://t-online.vercel.app',
+}));
 
 const io = new Server(server, {
     connectionStateRecovery: {
@@ -98,7 +100,7 @@ async function searchUser(nombre, id) {
     });
 }
 
-app.post("/registro", async (req, res) => {
+app.post("/api/registro", async (req, res) => {
     try {
         if (!/^[^\s]{3,10}$/.test(req.body.username)) throw "nombre invalido";
         const userData = await db.execute({
@@ -120,7 +122,7 @@ app.post("/registro", async (req, res) => {
         });
 
         // console.log(userData);
-        res.status(200).json({ message: "Registro exitoso", url: "http://localhost:8000/principal", data: selectData.rows, validation: true });
+        res.status(200).json({ message: "Registro exitoso", url: "https://t-online.vercel.app/principal", data: selectData.rows, validation: true });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: error });
@@ -166,7 +168,7 @@ async function searchSala(nombre) {
     });
 }  
 
-app.post("/sala-post", async (req, res) => {
+app.post("/api/sala-post", async (req, res) => {
     try {
         if (!/^\w[^\s]{3,20}$/.test(req.body.nombre)) throw new Error("Los datos no son validos");
         await existsSala(req.body.nombre);
@@ -260,5 +262,5 @@ io.on("connection", async (socket) => {
 // })
 // console.log(respuesta);
 server.listen(port, () => {
-    console.log(`Ejecutando en http://localhost:${port}`);
+    console.log(`Ejecutando en https://t-online.vercel.app:${port}`);
 });
