@@ -100,15 +100,17 @@ async function searchUser(nombre, id) {
 
 app.post("/api/registro", async (req, res) => {
     try {
-        if (!/^[^\s]{3,10}$/.test(req.body.username)) throw "nombre invalido";
+        console.log(req.body.nombre);
+        // if (typeof req.body.nombre != "string") throw new Error("Debe ser un string");
+        if (!/^[^\s]{3,10}$/.test(req.body.username)) throw new Error("nombre invalido");
         const userData = await db.execute({
             sql: "SELECT idUsuario, nombre FROM Usuarios WHERE nombre = (:username)",
-            args: { username: req.body.username }
+            args: { username: req.body.username } 
         });
         if (userData.rows.length > 0) {
             await existsUser(userData.rows[0], req.body.username);
         }
-
+ 
         await db.execute({
             sql: "INSERT INTO Usuarios (nombre) VALUES (:nombre)",
             args: { nombre: req.body.username }
@@ -121,7 +123,7 @@ app.post("/api/registro", async (req, res) => {
 
         // console.log(userData);
         console.log("Registro existoso");
-        res.status(200).json({ message: "Registro exitoso", url: "https://t-online.vercel.app/principal", data: selectData.rows, validation: true });
+        res.status(200).json({ message: "Registro exitoso", url: "https://t-online.onrender.com/principal", data: selectData.rows, validation: true });
     } catch (error) {
         console.log(error);
         res.status(400).json({ message: error });
