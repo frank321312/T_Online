@@ -120,6 +120,7 @@ app.post("/api/registro", async (req, res) => {
         });
 
         // console.log(userData);
+        console.log("Registro existoso");
         res.status(200).json({ message: "Registro exitoso", url: "https://t-online.vercel.app/principal", data: selectData.rows, validation: true });
     } catch (error) {
         console.log(error);
@@ -260,5 +261,5 @@ io.on("connection", async (socket) => {
 // })
 // console.log(respuesta);
 server.listen(port, () => {
-    console.log(`Ejecutando en https://t-online.vercel.app:${port}`);
+    console.log(`Ejecutando en el puerto ${port}`);
 });
