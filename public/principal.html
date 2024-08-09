@@ -1,107 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container-chat">
-      <header>
-        <h1 class="titulo">WordChat_V0.1</h1>
-      </header>
-      <div class="container__message"></div>
-      <form class="form">
-        <input type="text" class="chat" value="" />
-        <button type="submit" class="enviar">Enviar mensaje</button>
-        <!-- <button class="toggle-btn">Desconectar</button> -->
-      </form>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container-chat">
+    <header>
+      <h1 class="titulo">WordChat_V0.1</h1>
+    </header>
+    <div class="container__message"></div>
+    <form class="form">
+      <input type="text" class="chat" value="" />
+      <button type="submit" class="enviar">Enviar mensaje</button>
+      <!-- <button class="toggle-btn">Desconectar</button> -->
+    </form>
+  </div>
+
+  <div class="container-sala">
+    <div class="salas"></div>
+    <div class="container-addSala">
+      <div class="addSala"></div>
     </div>
+  </div>
 
-    <div class="container-sala">
-      <div class="salas"></div>
-      <div class="container-addSala">
-        <div class="addSala"></div>
-      </div>
-    </div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const dataDefect = {
+      nombre: "",
+      idUsuario: 0,
+      serverOffset: 0,
+    };
+    sessionStorage.getItem("usuario") ??
+      sessionStorage.setItem("usuario", JSON.stringify(dataDefect));
 
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="./client.js"></script>
-    <script>
-      const dataDefect = {
-        nombre: "",
-        idUsuario: 0,
-        serverOffset: 0,
-      };
-      sessionStorage.getItem("usuario") ??
-        sessionStorage.setItem("usuario", JSON.stringify(dataDefect));
+    const socket = io({
+      auth: {
+        nombre: JSON.parse(sessionStorage.getItem("usuario")).nombre ?? "",
+        id: JSON.parse(sessionStorage.getItem("usuario")).idUsuario ?? 0,
+      },
+    });
 
-      const socket = io({
-        auth: {
-          nombre: JSON.parse(sessionStorage.getItem("usuario")).nombre ?? "",
-          id: JSON.parse(sessionStorage.getItem("usuario")).idUsuario ?? 0,
-        },
-      });
+    const inputText = document.querySelector(".chat");
+    const form = document.querySelector(".form");
+    const buttonToggle = document.querySelector(".toggle-btn");
+    const container = document.querySelector(".container__message");
 
-      const inputText = document.querySelector(".chat");
-      const form = document.querySelector(".form");
-      const buttonToggle = document.querySelector(".toggle-btn");
-      const container = document.querySelector(".container__message");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (inputText.value) {
+        socket.emit("chat message", inputText.value);
+        inputText.value = "";
+      }
+    });
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (inputText.value) {
-          socket.emit("chat message", inputText.value);
-          inputText.value = "";
-        }
-      });
+    // buttonToggle.addEventListener("click", (e) => {
+    //   e.preventDefault();
+    //   if (socket.connected) {
+    //     buttonToggle.textContent = "Conectar";
+    //     socket.disconnect();
+    //   } else {
+    //     buttonToggle.textContent = "Desconectar";
+    //     socket.connect();
+    //   }
+    // });
 
-      // buttonToggle.addEventListener("click", (e) => {
-      //   e.preventDefault();
-      //   if (socket.connected) {
-      //     buttonToggle.textContent = "Conectar";
-      //     socket.disconnect();
-      //   } else {
-      //     buttonToggle.textContent = "Desconectar";
-      //     socket.connect();
-      //   }
-      // });
+    socket.on("mensaje", (msg, user) => {
+      container.innerHTML +=
+        socket.auth.id === user.idUsuario
+          ? `<span style="background-color: #3d3a3a;">Yo: ${msg}</span>`
+          : `<span>${user.nombre}: ${msg}</span>`;
+      container.scrollTop = container.scrollHeight;
+    });
 
-      socket.on("mensaje", (msg, user) => {
-        container.innerHTML +=
-          socket.auth.id === user.idUsuario
-            ? `<span style="background-color: #3d3a3a;">Yo: ${msg}</span>`
-            : `<span>${user.nombre}: ${msg}</span>`;
-        container.scrollTop = container.scrollHeight;
-      });
+    socket.on("mensaje recovered", (msgList, obj) => {
+      if (socket.auth.id === obj.idUsuario) {
+        container.innerHTML = "";
+        msgList.forEach((msg) => {
+          container.innerHTML +=
+            socket.auth.id === msg.idUsuario
+              ? `<span style="background-color: #3d3a3a;">Yo: ${msg.contenido}</span>`
+              : `<span>${msg.nombre}: ${msg.contenido}</span>`;
+        });
+      }
+    });
 
-      socket.on("mensaje recovered", (msgList, obj) => {
-        if (socket.auth.id === obj.idUsuario) {
-          container.innerHTML = "";
-          msgList.forEach((msg) => {
-            container.innerHTML +=
-              socket.auth.id === msg.idUsuario
-                ? `<span style="background-color: #3d3a3a;">Yo: ${msg.contenido}</span>`
-                : `<span>${msg.nombre}: ${msg.contenido}</span>`;
-          });
-        }
-      });
+    socket.on("error user", (error) => {
+      console.log(error);
+    });
 
-      socket.on("error user", (error) => {
-        console.log(error);
-      });
+    socket.on("enviar-sala", (sala) => {
+      const salaOn = document.createElement("div");
+      salaOn.classList.add("sala");
+      salaOn.innerHTML = `<span>sala: ${sala.nombre}</span>
+          <span>accesibilidad: ${sala.accesible ? "privado" : "publico"
+        }</span>`;
+      salas.appendChild(salaOn);
+      console.log("Alguien ha creado una sala")
+      console.log(sala)
+    });
 
-      const addSala = document.querySelector(".addSala");
-      const body = document.body;
-      const salas = document.querySelector(".salas");
-      const dataUser = JSON.parse(sessionStorage.getItem("usuario"));
+    const addSala = document.querySelector(".addSala");
+    const body = document.body;
+    const salas = document.querySelector(".salas");
+    const dataUser = JSON.parse(sessionStorage.getItem("usuario"));
+    console.log(dataUser)
 
-      addSala.addEventListener("click", () => {
-        if (body.querySelector(".cuadro-add") == undefined) {
-          const cuadroAddSala = document.createElement("div");
-          cuadroAddSala.classList.add("cuadro-add");
-          cuadroAddSala.innerHTML = `
+    addSala.addEventListener("click", () => {
+      if (body.querySelector(".cuadro-add") == undefined) {
+        const cuadroAddSala = document.createElement("div");
+        cuadroAddSala.classList.add("cuadro-add");
+        cuadroAddSala.innerHTML = `
         <div style="width: 100%; display: flex; justify-content: end; font-family: sans-serif; padding-right: 20px;">
         <span class="ico-X">X</span>
         </div>
@@ -117,79 +130,75 @@
         </form>
         `;
 
-          body.appendChild(cuadroAddSala);
-          const icoX = document.querySelector(".ico-X");
-          const check = document.getElementById("check");
-          const btnAdd = document.querySelector(".btn-add");
-          const textInput = document.getElementById("text-input");
-          const errorMessage = document.querySelector(".error");
-          const formSala = document.querySelector(".form-sala");
-          errorMessage.style.backgroundColor = "#fff";
-          errorMessage.style.alignSelf = "flex-start";
-          errorMessage.style.marginBottom = "8px";
-          errorMessage.style.padding = "0";
+        body.appendChild(cuadroAddSala);
+        const icoX = document.querySelector(".ico-X");
+        const check = document.getElementById("check");
+        const btnAdd = document.querySelector(".btn-add");
+        const textInput = document.getElementById("text-input");
+        const errorMessage = document.querySelector(".error");
+        const formSala = document.querySelector(".form-sala");
+        errorMessage.style.backgroundColor = "#fff";
+        errorMessage.style.alignSelf = "flex-start";
+        errorMessage.style.marginBottom = "8px";
+        errorMessage.style.padding = "0";
 
-          icoX.addEventListener("click", () => {
-            cuadroAddSala.removeChild(formSala);
-            document.body.removeChild(cuadroAddSala);
-          });
+        icoX.addEventListener("click", () => {
+          cuadroAddSala.removeChild(formSala);
+          document.body.removeChild(cuadroAddSala);
+        });
 
-          btnAdd.addEventListener("click", async (e) => {
-            e.preventDefault();
-            if (!/^\w[^\s]{3,20}$/.test(textInput.value)) {
-              console.log("Error");
-              errorMessage.textContent = "Nombre invalido";
-              errorMessage.style.backgroundColor = "#fff";
-              errorMessage.style.color = "rgb(207, 58, 58)";
-              errorMessage.style.padding = "5px 0 0 0";
-            } else {
-              try {
-                const respuesta = await fetch(
-                  "http://localhost:8000/api/sala-post",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      nombre: textInput.value,
-                      publico: check.checked,
-                      user: dataUser,
-                    }),
-                  }
-                );
-
-                const data = await respuesta.json();
-                if (data.error) {
-                  errorMessage.textContent = data.message;
-                  errorMessage.style.color = "rgb(207, 58, 58)";
-                  errorMessage.style.padding = "5px 0 0 0";
-                } else if (data.okay) {
-                  errorMessage.textContent = "";
-                  textInput.value = "";
-                  const sala = document.createElement("div");
-                  sala.classList.add("sala");
-                  // const objSala = {
-                  //   nombre: data.nombre,
-                  //   accesible: data.accesible
-                  // }
-                  sala.innerHTML = `
-                            <span>sala: ${data.nombre}</span>
-                            <span>accesibilidad: ${
-                              data.accesible ? "privado" : "publico"
-                            }</span>
-                            `;
-                  salas.appendChild(sala);
-                  body.removeChild(cuadroAddSala);
-                  socket.emit("crear-sala", data)
+        btnAdd.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (!/^\w[^\s]{3,20}$/.test(textInput.value)) {
+            console.log("Error");
+            errorMessage.textContent = "Nombre invalido";
+            errorMessage.style.backgroundColor = "#fff";
+            errorMessage.style.color = "rgb(207, 58, 58)";
+            errorMessage.style.padding = "5px 0 0 0";
+          } else {
+            try {
+              const respuesta = await fetch(
+                "http://localhost:8000/api/sala-post",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    nombre: textInput.value,
+                    publico: check.checked,
+                    user: dataUser,
+                  }),
                 }
-              } catch (error) {
-                console.log(error);
+              );
+
+              const data = await respuesta.json();
+              if (data.error) {
+                errorMessage.textContent = data.message;
+                errorMessage.style.color = "rgb(207, 58, 58)";
+                errorMessage.style.padding = "5px 0 0 0";
+              } else if (data.okay) {
+                errorMessage.textContent = "";
+                textInput.value = "";
+                body.removeChild(cuadroAddSala);
+                socket.emit("crear-sala", data)
               }
+            } catch (error) {
+              console.log(error);
             }
-          });
-        }
-      });
-    </script>
-  </body>
+          }
+        });
+      }
+    });
+
+    const salaAll = document.querySelectorAll(".sala");
+
+    for (let i = 0; i < salaAll.length; i++) {
+      salaAll[i].addEventListener("click", async () => {
+        window.open("http://localhost:8000/sala");
+      })
+    }
+  </script>
+</body>
+
 </html>

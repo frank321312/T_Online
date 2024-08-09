@@ -1,0 +1,7 @@
+{
+  nombre: 'Tursoi',
+  publico: false,
+  user: { idUsuario: 77, nombre: 'Plays_t' }
+}
+{ okay: true, nombre: 'Tursoi', accesible: false }
+

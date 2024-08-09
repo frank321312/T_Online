@@ -40,7 +40,7 @@ await db.execute(`
         idUsuario INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT
     );
-`)
+`);
 
 await db.execute(`
     CREATE TABLE IF NOT EXISTS Jugadas (
@@ -48,7 +48,7 @@ await db.execute(`
         idUsuario INTEGER,
         FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
     );
-`)
+`);
 
 await db.execute(`
     CREATE TABLE IF NOT EXISTS Salas (
@@ -59,7 +59,7 @@ await db.execute(`
         idUsuario INTEGER,
         FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
     );
-`)
+`);
 
 const port = process.env.PORT || 8000;
 
@@ -72,6 +72,10 @@ app.get("/", (req, res) => {
 
 app.get("/principal", (req, res) => {
     res.sendFile(join(__dirname, "/public/principal.html"));
+});
+
+app.get("/sala", (req, res) => {
+    res.sendFile(join(__dirname, "/public/salaGlobal.html"));
 });
 
 async function existsUser(user, username) {
@@ -110,7 +114,7 @@ app.post("/api/registro", async (req, res) => {
         if (userData.rows.length > 0) {
             await existsUser(userData.rows[0], req.body.username);
         }
- 
+
         await db.execute({
             sql: "INSERT INTO Usuarios (nombre) VALUES (:nombre)",
             args: { nombre: req.body.username }
@@ -195,6 +199,8 @@ app.get("/test", (req, res) => {
     res.send("Esto es una prueba")
 });
 
+
+
 io.on("connection", async (socket) => {
     console.log("Usuario conectado");
 
@@ -242,11 +248,12 @@ io.on("connection", async (socket) => {
 
         } catch (error) {
             console.log(error);
-        }
+        } 
     });
 
-    socket.on("crear-sala", (msg) => {
-        console.log(msg); 
+    socket.on("crear-sala", (sala) => {
+        console.log(sala); 
+        io.emit("enviar-sala", sala);
     });
 
     if (!socket.recovered) {
