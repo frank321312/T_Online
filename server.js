@@ -100,7 +100,7 @@ async function searchUser(nombre, id) {
 
 app.post("/api/registro", async (req, res) => {
     try {
-        console.log(req.body.nombre);
+        console.log(req.body);
         // if (typeof req.body.nombre != "string") throw new Error("Debe ser un string");
         if (!/^[^\s]{3,10}$/.test(req.body.username)) throw new Error("nombre invalido");
         const userData = await db.execute({
@@ -123,9 +123,9 @@ app.post("/api/registro", async (req, res) => {
 
         // console.log(userData);
         console.log("Registro existoso");
-        res.status(200).json({ message: "Registro exitoso", url: "https://t-online.onrender.com/principal", data: selectData.rows, validation: true });
-    } catch (error) {
-        console.log(error);
+        res.status(200).json({ message: "Registro exitoso", url: "http://localhost:8000/principal", data: selectData.rows, validation: true });
+    } catch (error) { 
+        console.log(error); 
         res.status(400).json({ message: error });
     }
 });
@@ -231,18 +231,22 @@ io.on("connection", async (socket) => {
             console.log(ultimaJugada.rows);
             if (ultimaJugada.rows[0].idUsuario === userSelect.idUsuario) {
                 throw new Error(`Este jugador no puede hacer una jugada ${ultimaJugada.rows[0].idUsuario}`);
-            }
+            } 
 
             await db.execute({
                 sql: "INSERT INTO Jugadas (idUsuario) VALUES (:id)",
                 args: { id: userSelect.idUsuario }
-            });
+            }); 
             // console.log("Este chavon fue quien hizo la jugada", socket.handshake.auth);
             socket.emit("espera", userSelect.idUsuario, true)
 
         } catch (error) {
             console.log(error);
         }
+    });
+
+    socket.on("crear-sala", (msg) => {
+        console.log(msg); 
     });
 
     if (!socket.recovered) {
